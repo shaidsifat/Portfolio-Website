@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaid Sifat — Odoo & Python Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0b;
+  --surface: #131316;
+  --surface-2: #1a1a1f;
+  --border: #2a2a30;
+  --text: #e8e8ec;
+  --text-dim: #8a8a95;
+  --accent: #6c5ce7;
+  --accent-light: #a29bfe;
+  --green: #00b894;
+  --orange: #f39c12;
+  --red: #e74c3c;
+  --blue: #0984e3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: #fff; }
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 20px 0; z-index: 100;
+  backdrop-filter: blur(20px);
+  background: rgba(10,10,11,0.8);
+  border-bottom: 1px solid rgba(42,42,48,0.5);
+}
+nav .container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; }
+.logo span { color: var(--accent-light); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  color: var(--text-dim); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: color 0.3s;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  background: var(--accent) !important;
+  color: #fff !important;
+  padding: 10px 24px !important;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  transition: all 0.3s;
+}
+.nav-cta:hover { background: var(--accent-light) !important; transform: translateY(-1px); }
+
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding-top: 80px;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--green);
+  font-weight: 500;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s ease;
+}
+.hero-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(40px, 5vw, 60px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-desc {
+  font-size: 17px; color: var(--text-dim); line-height: 1.7;
+  margin-bottom: 36px; max-width: 480px;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+.hero-actions {
+  display: flex; gap: 16px;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 600;
+  text-decoration: none; transition: all 0.3s;
+  cursor: pointer; border: none;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-primary {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 4px 20px rgba(108,92,231,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,92,231,0.4); }
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--accent); background: rgba(108,92,231,0.1); }
+
+.hero-terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease 0.4s both;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.terminal-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+.terminal-dot:nth-child(1) { background: #ff5f57; }
+.terminal-dot:nth-child(2) { background: #febc2e; }
+.terminal-dot:nth-child(3) { background: #28c840; }
+.terminal-bar span {
+  margin-left: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--text-dim);
+}
+.terminal-body {
+  padding: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 2;
+}
+.t-comment { color: #636e72; }
+.t-key { color: var(--accent-light); }
+.t-str { color: var(--green); }
+.t-num { color: var(--orange); }
+.t-bool { color: var(--blue); }
+
+.stats { padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; text-align: center; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--accent-light); letter-spacing: -1px; }
+.stat-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+
+section { padding: 100px 0; }
+.section-label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--accent-light); font-weight: 600; margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1px; margin-bottom: 16px;
+}
+.section-desc {
+  color: var(--text-dim); font-size: 16px;
+  max-width: 560px; line-height: 1.7; margin-bottom: 48px;
+}
+
+/* EXPERIENCE TIMELINE */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 7px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: all 0.3s;
+}
+.timeline-item:hover { border-color: var(--accent); transform: translateX(4px); }
+.timeline-item::before {
+  content: '';
+  position: absolute; left: -29px; top: 32px;
+  width: 12px; height: 12px;
+  background: var(--accent); border-radius: 50%;
+  border: 3px solid var(--bg);
+}
+.timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+.timeline-item h3 { font-size: 18px; font-weight: 600; }
+.timeline-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--accent-light);
+  background: rgba(108,92,231,0.15);
+  padding: 4px 12px; border-radius: 6px;
+}
+.timeline-company { font-size: 14px; color: var(--green); font-weight: 500; margin-bottom: 12px; }
+.timeline-item ul { list-style: none; }
+.timeline-item li {
+  font-size: 14px; color: var(--text-dim); line-height: 1.6;
+  padding: 4px 0; padding-left: 16px; position: relative;
+}
+.timeline-item li::before {
+  content: '→'; position: absolute; left: 0;
+  color: var(--accent); font-size: 12px;
+}
+
+/* SERVICES */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.4s;
+  position: relative; overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  opacity: 0; transition: opacity 0.3s;
+}
+.service-card:hover::before { opacity: 1; }
+.service-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(108,92,231,0.15); }
+.service-icon {
+  width: 48px; height: 48px;
+  background: rgba(108,92,231,0.15);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 20px;
+}
+.service-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.service-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+.service-tag {
+  display: inline-block; margin-top: 16px;
+  font-size: 12px; color: var(--green);
+  background: rgba(0,184,148,0.1);
+  padding: 4px 12px; border-radius: 100px; font-weight: 500;
+}
+
+/* PROJECTS */
+.projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px; transition: all 0.3s;
+}
+.project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.project-card h3 { font-size: 20px; font-weight: 600; }
+.project-version {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--accent-light);
+  background: rgba(108,92,231,0.15);
+  padding: 4px 10px; border-radius: 6px;
+  white-space: nowrap;
+}
+.project-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.project-tags span {
+  font-size: 11px; padding: 4px 10px; border-radius: 6px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-dim); font-weight: 500;
+}
+.project-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px;
+  font-size: 13px; color: var(--accent-light);
+  text-decoration: none; font-weight: 500;
+  transition: color 0.3s;
+}
+.project-link:hover { color: #fff; }
+
+/* TECH */
+.tech-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.tech-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px; text-align: center;
+  transition: all 0.3s;
+}
+.tech-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tech-item .icon { font-size: 28px; margin-bottom: 10px; }
+.tech-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.tech-item p { font-size: 11px; color: var(--text-dim); }
+
+/* EDUCATION */
+.edu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.edu-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px; transition: all 0.3s;
+}
+.edu-card:hover { border-color: var(--accent); }
+.edu-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.edu-card .school { font-size: 14px; color: var(--accent-light); margin-bottom: 8px; }
+.edu-card .detail { font-size: 13px; color: var(--text-dim); }
+
+/* PRICING */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px; transition: all 0.3s;
+  position: relative;
+}
+.pricing-card.featured { border-color: var(--accent); box-shadow: 0 0 40px rgba(108,92,231,0.15); }
+.pricing-card.featured::before {
+  content: 'POPULAR';
+  position: absolute; top: -12px; right: 24px;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 14px; border-radius: 6px; letter-spacing: 1px;
+}
+.pricing-card h3 { font-size: 16px; color: var(--text-dim); font-weight: 500; margin-bottom: 8px; }
+.pricing-amount { font-family: 'DM Serif Display', serif; font-size: 42px; margin-bottom: 4px; }
+.pricing-amount span { font-size: 16px; color: var(--text-dim); font-family: 'Outfit'; }
+.pricing-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.5; }
+.pricing-list { list-style: none; margin-bottom: 28px; }
+.pricing-list li {
+  font-size: 14px; padding: 8px 0; color: var(--text-dim);
+  border-bottom: 1px solid rgba(42,42,48,0.5);
+  display: flex; align-items: center; gap: 8px;
+}
+.pricing-list li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 13px; }
+.pricing-btn {
+  display: block; width: 100%; text-align: center;
+  padding: 14px; border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none; transition: all 0.3s;
+  font-family: 'Outfit'; cursor: pointer; border: none;
+}
+.pricing-card .pricing-btn { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+.pricing-card.featured .pricing-btn { background: var(--accent); color: #fff; border: none; }
+.pricing-btn:hover { transform: translateY(-2px); }
+
+/* CONTACT */
+.contact-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+.contact-info h3 { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 16px; }
+.contact-info p { color: var(--text-dim); font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+.contact-links { display: flex; flex-direction: column; gap: 16px; }
+.contact-link {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-dim); text-decoration: none;
+  font-size: 15px; transition: color 0.3s;
+}
+.contact-link:hover { color: var(--accent-light); }
+.contact-link-icon {
+  width: 40px; height: 40px;
+  background: rgba(108,92,231,0.15);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.contact-form { display: flex; flex-direction: column; gap: 16px; }
+.contact-form input, .contact-form textarea {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'Outfit'; font-size: 14px;
+  outline: none; transition: border-color 0.3s;
+}
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--accent); }
+.contact-form textarea { resize: vertical; min-height: 120px; }
+
+footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer p { font-size: 13px; color: var(--text-dim); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero-terminal { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .services-grid, .pricing-grid, .edu-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-wrapper { grid-template-columns: 1fr; padding: 32px; }
+  .nav-links { display: none; }
+  .timeline { padding-left: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">sifat<span>.dev</span></div>
+    <ul class="nav-links">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact" class="nav-cta">Hire Me</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">Available for freelance work</div>
+        <h1>Shaid Sifat<br><em>Odoo & Python</em> Developer</h1>
+        <p class="hero-desc">Software Engineer with 3+ years building ERP solutions, REST APIs, and full-stack applications. Specialized in Odoo (v10–v19), Django, FastAPI, and system integrations.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Start a Project →</a>
+          <a href="#projects" class="btn btn-outline">View Work</a>
+        </div>
+      </div>
+      <div class="hero-terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <span>sifat.py</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-comment"># Shaid Bin Md Sifat</span><br><br>
+          <span class="t-key">role</span> = <span class="t-str">"Software Engineer (Python)"</span><br>
+          <span class="t-key">location</span> = <span class="t-str">"Dhaka, Bangladesh"</span><br>
+          <span class="t-key">experience</span> = <span class="t-str">"3+ years"</span><br>
+          <span class="t-key">odoo</span> = [<span class="t-num">10</span>, <span class="t-num">15</span>, <span class="t-num">16</span>, <span class="t-num">17</span>, <span class="t-num">18</span>, <span class="t-num">19</span>]<br>
+          <span class="t-key">frameworks</span> = [<span class="t-str">"Django"</span>, <span class="t-str">"DRF"</span>, <span class="t-str">"FastAPI"</span>]<br>
+          <span class="t-key">available</span> = <span class="t-bool">True</span><br><br>
+          <span class="t-key">modules</span> = [<br>
+          &nbsp;&nbsp;<span class="t-str">"Purchase"</span>, <span class="t-str">"Inventory"</span>,<br>
+          &nbsp;&nbsp;<span class="t-str">"Sale"</span>, <span class="t-str">"POS"</span>, <span class="t-str">"Payroll"</span>,<br>
+          &nbsp;&nbsp;<span class="t-str">"Attendance"</span>, <span class="t-str">"Fleet"</span><br>
+          ]
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
+      <div><div class="stat-num">6</div><div class="stat-label">Odoo Versions</div></div>
+      <div><div class="stat-num">7+</div><div class="stat-label">Odoo Modules</div></div>
+      <div><div class="stat-num">3</div><div class="stat-label">Companies Served</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label">Career</div>
+    <h2 class="section-title">Professional Experience</h2>
+    <p class="section-desc">Building production systems across ERP, e-commerce, and enterprise software.</p>
+    <div class="timeline">
+      <div class="timeline-item fade-in">
+        <div class="timeline-header">
+          <h3>Software Engineer (Python)</h3>
+          <span class="timeline-date">Dec 2023 – Present</span>
+        </div>
+        <div class="timeline-company">Mir Info Systems — Dhaka</div>
+        <ul>
+          <li>Working on Odoo 15, 16, 17, 18 modules — Purchase, Inventory, Sale, POS, Payroll, Attendance, Leave, Fleet</li>
+          <li>Migrated full ERP system from Odoo 15 to Odoo 18</li>
+          <li>Built QWeb reports and custom dashboards</li>
+          <li>View customization — Widgets, Wizards, XML views, OWL components</li>
+          <li>API integration — PayPal, Momenta Pay, SSL Commerz payment gateways</li>
+          <li>Additional work with Django and FastAPI projects</li>
+        </ul>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-header">
+          <h3>Python Developer</h3>
+          <span class="timeline-date">Aug – Nov 2023</span>
+        </div>
+        <div class="timeline-company">Crystal Technology Bangladesh Ltd. — Dhaka</div>
+        <ul>
+          <li>Odoo 10 module development and custom module implementation</li>
+          <li>REST API development with Django</li>
+        </ul>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-header">
+          <h3>Backend Developer (Django)</h3>
+          <span class="timeline-date">Jul 2021 – Jul 2023</span>
+        </div>
+        <div class="timeline-company">Care-Box Ltd. — Dhaka</div>
+        <ul>
+          <li>Built full e-commerce backend — OTP auth, CSV upload, SSL payment, push notifications</li>
+          <li>WebSocket, Django Channels, Celery for real-time features</li>
+          <li>Developed POS system for Care-Box outlets</li>
+          <li>Built APIs with Django and DRF in containerized microservice architecture</li>
+          <li>Chatbot service, sales dashboard, and doctor attendance system</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="background: var(--surface);">
+  <div class="container">
+    <div class="section-label">What I Do</div>
+    <h2 class="section-title">Services</h2>
+    <p class="section-desc">End-to-end Odoo and Python development for your business.</p>
+    <div class="services-grid">
+      <div class="service-card fade-in">
+        <div class="service-icon">⚙️</div>
+        <h3>Odoo Module Development</h3>
+        <p>Custom modules from scratch — Purchase, Sale, Inventory, POS, Payroll, HR. Models, views, wizards, reports.</p>
+        <span class="service-tag">From $500</span>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon">🔗</div>
+        <h3>API & Payment Integration</h3>
+        <p>REST API, XML-RPC, JSON-RPC. Payment gateways — PayPal, SSL Commerz, Momenta Pay. Multi-server sync.</p>
+        <span class="service-tag">From $400</span>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon">📊</div>
+        <h3>Dashboards & Reports</h3>
+        <p>Custom kanban dashboards, QWeb PDF reports, Chart.js analytics, payment tracking, and invoice analysis.</p>
+        <span class="service-tag">From $300</span>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon">🔄</div>
+        <h3>Migration & Upgrade</h3>
+        <p>Odoo version migration (v10 → v18). Data migration, module compatibility fixes, and testing.</p>
+        <span class="service-tag">From $600</span>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon">🐍</div>
+        <h3>Django & FastAPI</h3>
+        <p>Backend APIs, e-commerce systems, microservices, WebSocket, Celery task queues, and admin panels.</p>
+        <span class="service-tag">From $400</span>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon">🐛</div>
+        <h3>Bug Fixing & Support</h3>
+        <p>Quick fixes for Odoo bugs, performance issues, module conflicts. Same-day turnaround available.</p>
+        <span class="service-tag">From $50</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">Portfolio</div>
+    <h2 class="section-title">Projects</h2>
+    <p class="section-desc">Real solutions built for real businesses.</p>
+    <div class="projects-grid">
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>Bi-directional ERP Sync</h3>
+          <span class="project-version">Odoo 12 ↔ 18</span>
+        </div>
+        <p>Real-time customer/supplier sync between two Odoo instances using JSON-RPC. Auto push on create/update with duplicate prevention.</p>
+        <div class="project-tags">
+          <span>Python</span><span>JSON-RPC</span><span>requests</span><span>Docker</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>AR Dashboard & Analytics</h3>
+          <span class="project-version">Odoo 18/19</span>
+        </div>
+        <p>Kanban dashboard with payment delay tracking, payment nature analysis, and Chart.js pie charts via OWL components.</p>
+        <div class="project-tags">
+          <span>OWL</span><span>Chart.js</span><span>Python</span><span>PostgreSQL</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>RFID Water Supply System</h3>
+          <span class="project-version">Django + React</span>
+        </div>
+        <p>Backend for Singapore National Water Supply Agency. RFID tracking with Django REST API and React/React Native frontend.</p>
+        <div class="project-tags">
+          <span>Django</span><span>DRF</span><span>React</span><span>PostgreSQL</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>Care-Box E-commerce</h3>
+          <span class="project-version">Django + DRF</span>
+        </div>
+        <p>Full e-commerce backend with OTP auth, SSL payment, WebSocket notifications, POS system, and microservice architecture.</p>
+        <div class="project-tags">
+          <span>Django</span><span>Celery</span><span>WebSocket</span><span>Docker</span>
+        </div>
+        <a href="https://www.care-box.com/" target="_blank" class="project-link">Visit Site →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>POS Kitchen Screen</h3>
+          <span class="project-version">Odoo 16</span>
+        </div>
+        <p>Kitchen display for restaurants — real-time order tracking, completion time analytics, split billing, and draft orders.</p>
+        <div class="project-tags">
+          <span>JavaScript</span><span>OWL</span><span>QWeb</span><span>Python</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-header">
+          <h3>Care-Box POS System</h3>
+          <span class="project-version">Django + DRF</span>
+        </div>
+        <p>Point of Sale backend for Care-Box retail outlets with staff management, sales reporting, and inventory tracking.</p>
+        <div class="project-tags">
+          <span>Django</span><span>DRF</span><span>PostgreSQL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech" style="background: var(--surface);">
+  <div class="container">
+    <div class="section-label">Tools</div>
+    <h2 class="section-title">Tech Stack</h2>
+    <p class="section-desc">Technologies I work with daily.</p>
+    <div class="tech-grid">
+      <div class="tech-item fade-in"><div class="icon">🐍</div><h4>Python</h4><p>Odoo, Django, FastAPI</p></div>
+      <div class="tech-item fade-in"><div class="icon">🟨</div><h4>JavaScript</h4><p>OWL, jQuery, React</p></div>
+      <div class="tech-item fade-in"><div class="icon">🐘</div><h4>PostgreSQL</h4><p>Database & ORM</p></div>
+      <div class="tech-item fade-in"><div class="icon">🐳</div><h4>Docker</h4><p>Containers & Deploy</p></div>
+      <div class="tech-item fade-in"><div class="icon">📄</div><h4>XML / QWeb</h4><p>Views & Reports</p></div>
+      <div class="tech-item fade-in"><div class="icon">🔌</div><h4>REST API</h4><p>DRF, FastAPI, RPC</p></div>
+      <div class="tech-item fade-in"><div class="icon">💳</div><h4>Payment</h4><p>PayPal, SSL, Momenta</p></div>
+      <div class="tech-item fade-in"><div class="icon">🔧</div><h4>Git</h4><p>Version Control</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section>
+  <div class="container">
+    <div class="section-label">Education</div>
+    <h2 class="section-title">Academic Background</h2>
+    <p class="section-desc"></p>
+    <div class="edu-grid">
+      <div class="edu-card fade-in">
+        <h3>B.Sc in CSE</h3>
+        <div class="school">Daffodil International University</div>
+        <div class="detail">CGPA: 3.06 • 2016 – 2020</div>
+      </div>
+      <div class="edu-card fade-in">
+        <h3>H.S.C in Science</h3>
+        <div class="school">Govt. Rajendro College</div>
+        <div class="detail">GPA: 4.42 • 2013 – 2015</div>
+      </div>
+      <div class="edu-card fade-in">
+        <h3>S.S.C in Science</h3>
+        <div class="school">Faridpur Zilla School</div>
+        <div class="detail">GPA: 5.00 • Golden A+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background: var(--surface);">
+  <div class="container">
+    <div class="section-label">Investment</div>
+    <h2 class="section-title">Pricing</h2>
+    <p class="section-desc">Transparent pricing. No hidden fees.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <h3>Quick Fix</h3>
+        <div class="pricing-amount">$50<span>/task</span></div>
+        <p class="pricing-desc">Small bugs and minor changes</p>
+        <ul class="pricing-list">
+          <li>Bug fixing</li>
+          <li>Field additions</li>
+          <li>View modifications</li>
+          <li>24-48hr delivery</li>
+        </ul>
+        <a href="#contact" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <h3>Hourly</h3>
+        <div class="pricing-amount">$25<span>/hour</span></div>
+        <p class="pricing-desc">Ongoing development</p>
+        <ul class="pricing-list">
+          <li>Custom development</li>
+          <li>API integration</li>
+          <li>Migration work</li>
+          <li>Direct communication</li>
+          <li>Code documentation</li>
+        </ul>
+        <a href="#contact" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <h3>Full Module</h3>
+        <div class="pricing-amount">$500<span>+</span></div>
+        <p class="pricing-desc">Complete module from scratch</p>
+        <ul class="pricing-list">
+          <li>Requirements analysis</li>
+          <li>Full development</li>
+          <li>Testing & QA</li>
+          <li>Deployment support</li>
+          <li>30-day warranty</li>
+        </ul>
+        <a href="#contact" class="pricing-btn">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-title">Let's Work Together</h2>
+    <p class="section-desc">Have a project in mind? I'll get back within 24 hours.</p>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <h3>Shaid Bin Md Sifat</h3>
+        <p>Software Engineer based in Dhaka, Bangladesh. Available for freelance projects, part-time contracts, and long-term collaboration.</p>
+        <div class="contact-links">
+          <a href="mailto:shaidsifat55@gmail.com" class="contact-link">
+            <div class="contact-link-icon">📧</div>
+            shaidsifat55@gmail.com
+          </a>
+          <a href="tel:+8801521315555" class="contact-link">
+            <div class="contact-link-icon">📱</div>
+            +880 1521 315555
+          </a>
+          <a href="https://linkedin.com/in/shaidsifat/" target="_blank" class="contact-link">
+            <div class="contact-link-icon">💼</div>
+            linkedin.com/in/shaidsifat
+          </a>
+          <a href="https://github.com/shaidsifat" target="_blank" class="contact-link">
+            <div class="contact-link-icon">🐙</div>
+            github.com/shaidsifat
+          </a>
+          <a href="https://wa.me/8801521315555" class="contact-link">
+            <div class="contact-link-icon">💬</div>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Email Address" required>
+        <input type="text" placeholder="Project Type (e.g. Odoo Module, API, Migration)">
+        <textarea placeholder="Tell me about your project..."></textarea>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Shaid Sifat — Software Engineer (Python) • Dhaka, Bangladesh</p>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  btn.textContent = '✓ Message Sent!';
+  btn.style.background = '#00b894';
+  setTimeout(() => { btn.textContent = 'Send Message →'; btn.style.background = ''; e.target.reset(); }, 3000);
+}
+</script>
+
+</body>
+</html>
